@@ -5,5 +5,6 @@ public enum OrderStatus {
     IN_PROGRESS,
     OUT_FOR_DELIVERY,
     DELIVERED,
-    CANCELLED
+    CANCELLED,
+    ADMIN_CANCELLED
 }

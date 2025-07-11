@@ -156,5 +156,23 @@ public class OrderController {
         }
     }
 
+    // admin can forcefully cancel the order
+    @PatchMapping("/{orderId}/admin-cancel")
+    public ResponseEntity<?> cancelOrderByAdmin(@PathVariable Long orderId,
+                                                @RequestHeader("X-User-Role") String role)
+    {
+        // if the role is not admin
+        if (!role.contains("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only admins can cancel orders forcefully");
+        }
+
+        try {
+            OrderStatusUpdateResponseDto response =  orderService.cancelOrderByAdmin(orderId);
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
 
 }

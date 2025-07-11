@@ -277,4 +277,31 @@ public class OrderServiceImpl implements OrderService{
                 .totalRestaurants(totalRestaurants)
                 .build();
     }
+
+    @Override
+    public OrderStatusUpdateResponseDto cancelOrderByAdmin(Long orderId) {
+
+        // check order is found by id or not
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // You can allow cancel at any stage — or restrict e.g., not after DELIVERED
+        if (order.getStatus() == OrderStatus.DELIVERED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot cancel a delivered order");
+        }
+
+        order.setStatus(OrderStatus.ADMIN_CANCELLED); // cancel order forcefully by Admin.
+
+        Order updated = orderRepository.save(order); // save updated order status
+
+
+
+        return OrderStatusUpdateResponseDto.builder()
+                .orderId(updated.getId())
+                .status(updated.getStatus())
+                .message("Order has been forcefully cancelled by admin")
+                .updateAt(LocalDateTime.now())
+                .build();
+
+    }
 }

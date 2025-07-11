@@ -23,4 +23,6 @@ public interface OrderService {
     List<OrderResponseDto> getAllOrdersByAdmin();
 
     AdminStatsResponseDto getAdminStats();
+
+    OrderStatusUpdateResponseDto cancelOrderByAdmin(Long orderId);
 }
