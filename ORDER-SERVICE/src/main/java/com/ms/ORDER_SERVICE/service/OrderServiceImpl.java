@@ -1,6 +1,7 @@
 package com.ms.ORDER_SERVICE.service;
 
 import com.ms.ORDER_SERVICE.dto.*;
+import com.ms.ORDER_SERVICE.feign.AuthFeignClient;
 import com.ms.ORDER_SERVICE.feign.RestaurantFeignClient;
 import com.ms.ORDER_SERVICE.model.Order;
 import com.ms.ORDER_SERVICE.model.OrderItem;
@@ -30,6 +31,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private RestaurantFeignClient restaurantFeignClient;
+    
+    @Autowired
+    private AuthFeignClient authFeignClient;
 
     // place order
     @Transactional
@@ -219,6 +223,58 @@ public class OrderServiceImpl implements OrderService{
                 .status(updated.getStatus())
                 .message("Order cancelled successfully")
                 .updateAt(LocalDateTime.now())
+                .build();
+    }
+
+    @Override
+    public List<OrderResponseDto> getAllOrdersByAdmin() {
+
+        List<Order> orders = orderRepository.findAll();
+
+        //extracting orderItems for each Order
+        return orders.stream().map(order ->{
+            List<OrderItemResponseDto> itemDtos = order.getItems().stream()
+                    .map(item-> OrderItemResponseDto.builder()
+                            .itemName(item.getItemName())
+                            .quantity(item.getQuantity())
+                            .price(item.getPrice())
+                            .build())
+                    .toList();
+
+            // making Order Response of each Order
+            return OrderResponseDto.builder()
+                    .orderId(order.getId())
+                    .userId(order.getUserId())
+                    .restaurantId(order.getRestaurantId())
+                    .orderTime(order.getOrderTime())
+                    .orderStatus(order.getStatus())
+                    .totalAmount(order.getTotalAmount())
+                    .items(itemDtos)
+                    .build();
+        }).toList();
+    }
+
+    @Override
+    public AdminStatsResponseDto getAdminStats() {
+
+        long totalOrders = orderRepository.count();
+        long placed = orderRepository.countByStatus(OrderStatus.PLACED);
+        long inProgress = orderRepository.countByStatus(OrderStatus.IN_PROGRESS);
+        long delivered = orderRepository.countByStatus(OrderStatus.DELIVERED);
+        long cancelled = orderRepository.countByStatus(OrderStatus.CANCELLED);
+
+        // Feign clients or REST calls to other services:
+        long totalUsers = authFeignClient.getTotalUsers();// all users count from auth service
+        long totalRestaurants = restaurantFeignClient.getTotalRestaurants(); // all restaurants count from Restaurant Service
+
+        return AdminStatsResponseDto.builder()
+                .totalOrders(totalOrders)
+                .placedOrders(placed)
+                .inProgressOrders(inProgress)
+                .deliveredOrders(delivered)
+                .cancelledOrders(cancelled)
+                .totalUsers(totalUsers)
+                .totalRestaurants(totalRestaurants)
                 .build();
     }
 }

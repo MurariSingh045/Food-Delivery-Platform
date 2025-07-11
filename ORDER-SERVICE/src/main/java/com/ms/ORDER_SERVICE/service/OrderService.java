@@ -1,5 +1,6 @@
 package com.ms.ORDER_SERVICE.service;
 
+import com.ms.ORDER_SERVICE.dto.AdminStatsResponseDto;
 import com.ms.ORDER_SERVICE.dto.OrderRequestDto;
 import com.ms.ORDER_SERVICE.dto.OrderResponseDto;
 import com.ms.ORDER_SERVICE.dto.OrderStatusUpdateResponseDto;
@@ -18,4 +19,8 @@ public interface OrderService {
     List<OrderResponseDto> checkOrdersByRestaurantOwner(Long resId, Long ownerId);
 
     OrderStatusUpdateResponseDto cancelOrderByUser(Long orderId, Long userId);
+
+    List<OrderResponseDto> getAllOrdersByAdmin();
+
+    AdminStatsResponseDto getAdminStats();
 }

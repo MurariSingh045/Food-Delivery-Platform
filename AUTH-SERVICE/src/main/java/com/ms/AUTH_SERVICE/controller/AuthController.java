@@ -104,5 +104,12 @@ public class AuthController {
 
     }
 
+    // admin can check count of users available
+    @GetMapping("/count")
+    public long countUsers() {
+        return userService.countUsers();
+    }
+
+
 
 }

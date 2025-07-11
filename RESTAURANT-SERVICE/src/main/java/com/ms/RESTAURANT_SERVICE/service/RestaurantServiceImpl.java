@@ -136,5 +136,10 @@ public class RestaurantServiceImpl implements RestaurantService{
 
     }
 
+    @Override
+    public long countRestaurants() {
+        return restaurantRepository.count();
+    }
+
 
 }

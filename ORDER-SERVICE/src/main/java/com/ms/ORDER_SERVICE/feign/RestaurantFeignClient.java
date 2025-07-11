@@ -12,4 +12,7 @@ public interface RestaurantFeignClient {
 
     @GetMapping("/restaurant/{id}")
     RestaurantResponseDto getRestaurantById(@PathVariable("id") Long restaurantId);
+
+    @GetMapping("/restaurant/count")
+    long getTotalRestaurants();
 }

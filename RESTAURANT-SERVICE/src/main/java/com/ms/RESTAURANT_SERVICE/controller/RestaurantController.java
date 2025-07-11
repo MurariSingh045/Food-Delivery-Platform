@@ -104,4 +104,11 @@ public class RestaurantController {
        return ResponseEntity.ok(restaurant);
     }
 
+
+    @GetMapping("/count")
+    public long countRestaurants() {
+        return restaurantService.countRestaurants();
+    }
+
+
 }

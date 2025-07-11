@@ -76,5 +76,10 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Override
+    public long countUsers() {
+        return userRepository.count();
+    }
+
 
 }

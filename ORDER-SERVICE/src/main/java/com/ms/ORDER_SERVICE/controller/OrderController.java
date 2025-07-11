@@ -1,9 +1,6 @@
 package com.ms.ORDER_SERVICE.controller;
 
-import com.ms.ORDER_SERVICE.dto.OrderRequestDto;
-import com.ms.ORDER_SERVICE.dto.OrderResponseDto;
-import com.ms.ORDER_SERVICE.dto.OrderStatusUpdateRequestDto;
-import com.ms.ORDER_SERVICE.dto.OrderStatusUpdateResponseDto;
+import com.ms.ORDER_SERVICE.dto.*;
 import com.ms.ORDER_SERVICE.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,8 +90,12 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only restaurant owners can see all orders ");
         }
 
-       List<OrderResponseDto> response = orderService.checkOrdersByRestaurantOwner(resId , ownerId);
-        return ResponseEntity.ok(response);
+        try {
+            List<OrderResponseDto> response = orderService.checkOrdersByRestaurantOwner(resId , ownerId);
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
     }
 
 
@@ -110,8 +111,49 @@ public class OrderController {
                     .body("Only users can cancel orders");
         }
 
-        OrderStatusUpdateResponseDto response = orderService.cancelOrderByUser(orderId , userId);
-        return ResponseEntity.ok(response);
+        try {
+            OrderStatusUpdateResponseDto response = orderService.cancelOrderByUser(orderId , userId);
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
+    //admin can view all orders
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllOrdersByAdmin(@RequestHeader("X-User-Role") String role)
+    {
+        // if the role is not Admin
+        // only user can cancel order
+        if (!role.contains("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Only Admin can check all orders");
+        }
+
+       try {
+           List<OrderResponseDto> response = orderService.getAllOrdersByAdmin();
+           return ResponseEntity.ok(response);
+       }catch (RuntimeException e) {
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+       }
+
+    }
+
+    // admin can have all data about orders , restaurant ,  users , order status
+    @GetMapping("/admin/stats")
+    public ResponseEntity<?> getPlatformStats(@RequestHeader("X-User-Role") String role)
+    {
+        // if the role is not admin
+        if (!role.contains("ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only admins can view platform stats");
+        }
+
+        try {
+            AdminStatsResponseDto stats = orderService.getAdminStats();
+            return ResponseEntity.ok(stats);
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
     }
 
 

@@ -25,4 +25,6 @@ public interface RestaurantService {
     String deleteRestaurant(Long restaurantId, Long ownerId, String role);
 
     RestaurantResponseDto getRestaurantById(Long id);
+
+    long countRestaurants();
 }
