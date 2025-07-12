@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService{
     public OrderResponseDto placeOrder(OrderRequestDto orderRequestDto, Long userId) {
 
          List<OrderItem> items = new ArrayList<>();
-        double totalPrice = 0;
+         double totalPrice = 0;
 
         for (OrderItemRequestDto itemDto : orderRequestDto.getItems()) {
 
@@ -58,10 +58,10 @@ public class OrderServiceImpl implements OrderService{
 
             totalPrice += orderItem.getPrice() * orderItem.getQuantity();
 
-            items.add(orderItem);
+            items.add(orderItem); // add item into item Order Item List
         }
 
-        // ✅ Create Order object
+        //  Create Order object
         Order order = Order.builder()
                 .userId(userId)
                 .restaurantId(orderRequestDto.getRestaurantId())
@@ -70,14 +70,15 @@ public class OrderServiceImpl implements OrderService{
                 .totalAmount(totalPrice)
                 .build();
 
-        // ✅ Set reverse relationship
+        //  Set reverse relationship
+        // to know which orderItem belongs to which Order
         items.forEach(item -> item.setOrder(order));
         order.setItems(items);
 
-        // ✅ Save order (cascade saves items too)
+        //  Save order (cascade saves items too)
         Order saved = orderRepository.save(order);
 
-        // ✅ Build response
+        //  Build response
         List<OrderItemResponseDto> responseItems = saved.getItems().stream()
                 .map(item -> OrderItemResponseDto.builder()
                         .itemName(item.getItemName())

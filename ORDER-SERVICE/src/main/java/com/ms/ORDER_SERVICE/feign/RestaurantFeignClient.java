@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "RESTAURANT-SERVICE")
 public interface RestaurantFeignClient {
 
-
+    // get Restaurant
     @GetMapping("/restaurant/{id}")
     RestaurantResponseDto getRestaurantById(@PathVariable("id") Long restaurantId);
 
+    // get count of restaurant
     @GetMapping("/restaurant/count")
     long getTotalRestaurants();
 
+    // get MenuItem via item id
     @GetMapping("/restaurant/menu/item/{id}")
     MenuItemResponseDto getItemById(@PathVariable("id") Long itemId);
 }

@@ -104,7 +104,7 @@ public class RestaurantController {
        return ResponseEntity.ok(restaurant);
     }
 
-
+    // get count of restaurant which is called via feign client inside the OrderService
     @GetMapping("/count")
     public long countRestaurants() {
         return restaurantService.countRestaurants();

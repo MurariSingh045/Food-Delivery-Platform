@@ -27,19 +27,11 @@ public class MenuItemServiceImpl implements MenuItemService{
     @Override
     public List<MenuItemResponseDto> getMenuItems(Long resId , Long ownerId , String role) {
 
-//        // if the role does not match
-//        if (!role.contains("RESTAURANT") || !role.contains("USER")) {
-//            throw new RuntimeException("Access denied! Only Restaurant Owners can add a restaurant.");
-//        }
 
         // if the restaurant not found
         Restaurant restaurant = restaurantRepository.findById(resId)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-//
-//        // if the ownerId which we are providing and the ownerId from the restaurant don't match then
-//        if (!restaurant.getOwnerId().equals(ownerId)) {
-//            throw new RuntimeException("Access denied! Only Restaurant Owners can add a restaurant.");
-//        }
+
 
         return menuItemRepository.findByRestaurantId(resId).stream()
                 .map(item-> MenuItemResponseDto.builder()
@@ -75,6 +67,7 @@ public class MenuItemServiceImpl implements MenuItemService{
                 .restaurant(restaurant)
                 .build();
 
+        // save menItems
         MenuItem allMenuItem =  menuItemRepository.save(menuItems);
 
         return MenuItemResponseDto.builder()
@@ -130,7 +123,7 @@ public class MenuItemServiceImpl implements MenuItemService{
 
         // mak object of item response dto
 
-        return MenuItemResponseDto.builder() // mak object of item response dto
+        return MenuItemResponseDto.builder() // make object of item response dto
                 .id(saved.getId())
                 .name(saved.getName())
                 .description(saved.getDescription())
