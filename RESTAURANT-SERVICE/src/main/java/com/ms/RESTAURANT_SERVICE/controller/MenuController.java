@@ -68,4 +68,12 @@ public class MenuController {
          }
      }
 
+     // get menuList By id which will be called by OrderService Feign Client
+    @GetMapping("/item/{id}")
+    public ResponseEntity<?> getItemById(@PathVariable Long id)
+    {
+      MenuItemResponseDto response =  menuItemService.getItemById(id);
+      return ResponseEntity.ok(response);
+    }
+
 }

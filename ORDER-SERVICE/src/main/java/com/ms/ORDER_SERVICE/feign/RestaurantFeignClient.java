@@ -1,6 +1,7 @@
 package com.ms.ORDER_SERVICE.feign;
 
 
+import com.ms.ORDER_SERVICE.dto.MenuItemResponseDto;
 import com.ms.ORDER_SERVICE.dto.RestaurantResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,4 +16,7 @@ public interface RestaurantFeignClient {
 
     @GetMapping("/restaurant/count")
     long getTotalRestaurants();
+
+    @GetMapping("/restaurant/menu/item/{id}")
+    MenuItemResponseDto getItemById(@PathVariable("id") Long itemId);
 }

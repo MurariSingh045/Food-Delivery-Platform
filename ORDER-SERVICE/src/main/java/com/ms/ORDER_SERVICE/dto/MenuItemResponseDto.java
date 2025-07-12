@@ -1,15 +1,17 @@
 package com.ms.ORDER_SERVICE.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemRequestDto {
+@Builder
+public class MenuItemResponseDto {
 
     private Long itemId;
-    private Integer quantity;
-
+    private String name;
+    private double price;
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,21 +41,27 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public OrderResponseDto placeOrder(OrderRequestDto orderRequestDto, Long userId) {
 
-        // extracting order items from Order
-        List<OrderItem> items = orderRequestDto.getItems().stream()
-                .map(item -> OrderItem.builder()
-                        .itemName(item.getItemName())
-                        .quantity(item.getQuantity())
-                        .price(item.getPrice())
-                        .build())
-                .toList();
+         List<OrderItem> items = new ArrayList<>();
+        double totalPrice = 0;
 
-        // calculating price of each item
-        double totalPrice = items.stream()
-                .mapToDouble(item-> item.getPrice() * item.getQuantity())
-                .sum();
+        for (OrderItemRequestDto itemDto : orderRequestDto.getItems()) {
 
-        // making object of Order and putting order items on it
+            //  Fetch item details from Restaurant Service (trusted source)
+            MenuItemResponseDto menuItem = restaurantFeignClient.getItemById(itemDto.getItemId());
+
+            //  Create OrderItem with trusted price & name
+            OrderItem orderItem = OrderItem.builder()
+                    .itemName(menuItem.getName())
+                    .price(menuItem.getPrice())
+                    .quantity(itemDto.getQuantity())
+                    .build();
+
+            totalPrice += orderItem.getPrice() * orderItem.getQuantity();
+
+            items.add(orderItem);
+        }
+
+        // ✅ Create Order object
         Order order = Order.builder()
                 .userId(userId)
                 .restaurantId(orderRequestDto.getRestaurantId())
@@ -63,29 +70,22 @@ public class OrderServiceImpl implements OrderService{
                 .totalAmount(totalPrice)
                 .build();
 
-          // setting reverse relation
-        // this will tell JPA that  which items belongs to which order.
-        // Order → OrderItems (parent(Order) should know about its children(OrderItems)
-        //OrderItem → Order (children(orderItems) should must have info about its Parent(Order)
-         items.forEach(i->i.setOrder(order));
-         order.setItems(items);
+        // ✅ Set reverse relationship
+        items.forEach(item -> item.setOrder(order));
+        order.setItems(items);
 
-        Order saved =  orderRepository.save(order); // saves items too due to CascadeType.ALL
+        // ✅ Save order (cascade saves items too)
+        Order saved = orderRepository.save(order);
 
-        // extract items from saved Order
-        List<OrderItem> itemList = saved.getItems();
+        // ✅ Build response
+        List<OrderItemResponseDto> responseItems = saved.getItems().stream()
+                .map(item -> OrderItemResponseDto.builder()
+                        .itemName(item.getItemName())
+                        .quantity(item.getQuantity())
+                        .price(item.getPrice())
+                        .build())
+                .toList();
 
-        // making OrderItemResponseDto Object of item List
-       List<OrderItemResponseDto> responseItems = items.stream()
-               .map(item -> OrderItemResponseDto.builder()
-                       .itemName(item.getItemName())
-                       .quantity(item.getQuantity())
-                       .price(item.getPrice())
-                       .build())
-               .toList();
-
-
-       // return Order Response
         return OrderResponseDto.builder()
                 .orderId(saved.getId())
                 .userId(saved.getUserId())
@@ -95,7 +95,6 @@ public class OrderServiceImpl implements OrderService{
                 .totalAmount(saved.getTotalAmount())
                 .items(responseItems)
                 .build();
-
     }
 
     @Override

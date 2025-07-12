@@ -21,4 +21,6 @@ public interface MenuItemService {
 
 
     MenuItemResponseDto addMenuItem(MenuItemRequestDto menuItemRequestDto, Long ownerId, String role);
+
+    MenuItemResponseDto getItemById(Long id);
 }

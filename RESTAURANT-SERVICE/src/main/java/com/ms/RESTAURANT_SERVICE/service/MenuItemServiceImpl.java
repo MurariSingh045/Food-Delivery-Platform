@@ -72,7 +72,7 @@ public class MenuItemServiceImpl implements MenuItemService{
                 .name(menuItemRequestDto.getName())
                 .description(menuItemRequestDto.getDescription())
                 .price(menuItemRequestDto.getPrice())
-                .restaurantId(restaurant.getId())
+                .restaurant(restaurant)
                 .build();
 
         MenuItem allMenuItem =  menuItemRepository.save(menuItems);
@@ -84,6 +84,21 @@ public class MenuItemServiceImpl implements MenuItemService{
                 .price(allMenuItem.getPrice())
                 .build();
 
+    }
+
+    @Override
+    public MenuItemResponseDto getItemById(Long id) {
+
+        MenuItem item = menuItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        return MenuItemResponseDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .price(item.getPrice())
+                .restaurantId(item.getRestaurant().getId())
+                .build();
     }
 
     @Override
@@ -103,7 +118,7 @@ public class MenuItemServiceImpl implements MenuItemService{
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
         // extracting restaurant through id which is provided in existingItem
-        Restaurant restaurant = restaurantRepository.findById(existingItem.getRestaurantId())
+        Restaurant restaurant = restaurantRepository.findById(existingItem.getRestaurant().getId())
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         // update the item
@@ -135,7 +150,7 @@ public class MenuItemServiceImpl implements MenuItemService{
         MenuItem item = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
-        Restaurant restaurant = restaurantRepository.findById(item.getRestaurantId())
+        Restaurant restaurant = restaurantRepository.findById(item.getRestaurant().getId())
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
         if (!restaurant.getOwnerId().equals(ownerId)) {
