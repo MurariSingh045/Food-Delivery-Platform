@@ -47,6 +47,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                 .resId(saved.getId())
                 .name(saved.getName())
                 .location(saved.getLocation())
+                .ownerId(saved.getOwnerId())
                 .build();
 
     }
@@ -78,6 +79,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                         .resId(r.getId())
                         .name(r.getName())
                         .location(r.getLocation())
+                        .ownerId(r.getOwnerId())
                         .build())
                 .collect(Collectors.toList());
     }
