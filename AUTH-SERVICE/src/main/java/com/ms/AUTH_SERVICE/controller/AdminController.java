@@ -36,15 +36,6 @@ public class AdminController {
     private RestaurantService restaurantService;
 
 
-//    @PutMapping("/assign-role")
-//    public ResponseEntity<?> promoteUserToRestaurant(
-//            @RequestParam String email,
-//            @RequestParam String role
-//    ) {
-//        AdminPromotionResponseDto response = adminService.promoteUserToRestaurant(email , role);
-//        return ResponseEntity.ok(response);
-//    }
-
 
 
     // register admin
