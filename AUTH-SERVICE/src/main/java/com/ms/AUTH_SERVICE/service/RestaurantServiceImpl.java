@@ -210,7 +210,7 @@ public class RestaurantServiceImpl implements RestaurantService{
                  .gst(request.getGst())
                  .status(request.getStatus())
                  .adminMessage("Restaurant role request has been rejected!")
-                 .createdAt(request.getRespondedAt())
+                 .createdAt(LocalDateTime.now())
                  .build();
 
     }
