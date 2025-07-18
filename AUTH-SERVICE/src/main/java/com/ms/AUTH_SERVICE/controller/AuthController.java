@@ -25,11 +25,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -104,7 +100,7 @@ public class AuthController {
 
     }
 
-    // admin can check count of users available
+    // admin can check the count of users available
     @GetMapping("/count")
     public long countUsers() {
         return userService.countUsers();

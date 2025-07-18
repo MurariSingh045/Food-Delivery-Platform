@@ -19,6 +19,8 @@ public class RouteConfig {
                         .path("/auth/**")
                         .or()
                         .path("/admin/**")
+                        .or()
+                        .path("/restaurant-role/**")
                         .uri("lb://AUTH-SERVICE"))
 
                 //RESTAURANT Routes
@@ -30,6 +32,7 @@ public class RouteConfig {
                 .route("order-service" , r -> r
                         .path("/order/**")
                         .uri("lb://ORDER-SERVICE"))
+
 
                 .build();
     }

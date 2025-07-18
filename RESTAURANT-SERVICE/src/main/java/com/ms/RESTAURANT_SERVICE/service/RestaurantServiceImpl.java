@@ -8,8 +8,6 @@ import com.ms.RESTAURANT_SERVICE.repo.RestaurantRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -98,12 +96,12 @@ public class RestaurantServiceImpl implements RestaurantService{
     @Transactional
     @Override
     public String deleteRestaurant(Long restaurantId, Long ownerId, String role) {
-        // Check role
+        // Check roles
         if (!role.contains("RESTAURANT")) {
             throw new RuntimeException("Access denied. You are not a restaurant owner.");
         }
 
-        // Find restaurant
+        // Find restaurants
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
@@ -125,7 +123,7 @@ public class RestaurantServiceImpl implements RestaurantService{
     @Override
     public RestaurantResponseDto getRestaurantById(Long id) {
 
-        // getting restaurant by id.
+        // getting restaurants by id.
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Restaurant not found with id: " + id));
 
