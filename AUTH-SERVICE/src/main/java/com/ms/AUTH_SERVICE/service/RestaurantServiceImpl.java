@@ -183,11 +183,11 @@ public class RestaurantServiceImpl implements RestaurantService{
                   .orElseThrow(()->new RuntimeException("Request not found!"));
 
 
-//          // admin can reject only pending request
-//          if(request.getStatus() != RestaurantRoleStatus.PENDING)
-//          {
-//              throw new RuntimeException("Can not reject handled request!");
-//          }
+          // admin can reject only pending request
+          if(request.getStatus() != RestaurantRoleStatus.PENDING)
+          {
+              throw new RuntimeException("Can not reject handled request!");
+          }
 
           // reject request
           request.setStatus(RestaurantRoleStatus.REJECTED); // reject request
