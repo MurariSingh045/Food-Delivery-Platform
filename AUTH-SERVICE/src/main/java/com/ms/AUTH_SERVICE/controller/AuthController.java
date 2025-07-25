@@ -48,23 +48,8 @@ public class AuthController {
     {
       try{
 
-          //1. validate user here
-          // load user internally using loadUserByUserName from  & and also compared password after encrypting incoming pass(coz we have stored password in encrypted from)
-          // after matching if user is valid & if the user is not valid then Throws BadCredentialsException or another AuthenticationException.
-          authenticationManager.authenticate(
-                  new UsernamePasswordAuthenticationToken(userSignInDTO.getEmail() , userSignInDTO.getPassword()) // generate Token not Jwt type
-          );
-
-          // we load user manually to generate token here
-          //2. load user here if user is  not found then through exception
-          User user = userService.findUserByEmail(userSignInDTO.getEmail());
-
-
-         //3. generate token with roles
-          String token = jwtUtil.generateToken(user);
-
-          // return Jwt response here
-          return ResponseEntity.ok(new JwtResponseDTO(token));
+           JwtResponseDTO response =  userService.loginUser(userSignInDTO.getEmail() , userSignInDTO.getPassword());
+           return ResponseEntity.ok(response);
       } catch (Exception e) {
           e.printStackTrace(); //  log exception
           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credential !");

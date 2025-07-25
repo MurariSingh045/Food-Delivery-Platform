@@ -1,10 +1,10 @@
 package com.ms.AUTH_SERVICE.service;
 
 
+import com.ms.AUTH_SERVICE.dto.JwtResponseDTO;
 import com.ms.AUTH_SERVICE.dto.UserSignUpDTO;
 import com.ms.AUTH_SERVICE.model.User;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 
 public interface UserService {
@@ -15,4 +15,6 @@ public interface UserService {
 
 
     long countUsers();
+
+    JwtResponseDTO loginUser(String email, String password);
 }
